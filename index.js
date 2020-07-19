@@ -16,10 +16,12 @@ menuTemplate.select("select", ["Send Money", "Withdraw Money"], {
       ctx.reply("What Amount?");
       bot.on("text", (ctx) => {
         let amount = ctx.update.message.text;
-        if (key === "Send Money") {
-          ctx.reply(withdrawalFees(amount));
+        if (key === "Send Money") {      
+          const withdrawalFee=  withdrawalFees(amount)
+          const total = Number(amount) + withdrawalFee + transferFees(amount)
+          ctx.reply(`You need to send ${withdrawalFee + Number(amount)}ksh incl. withdrawal fees of ${withdrawalFee}ksh. This will cost you ${transferFees(amount)}ksh. You need a total of ${total}ksh`);
         } else {
-          ctx.reply(transferFees(amount));
+          ctx.reply(`You will be charged ${withdrawalFees(amount)}`);
         }
       });
       return true;
