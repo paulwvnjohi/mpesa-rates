@@ -1,3 +1,4 @@
+const http =require('http')
 const { Telegraf } = require("telegraf");
 const { MenuTemplate, MenuMiddleware } = require("telegraf-inline-menu");
 const withdrawalFees = require("./withdrawalFees");
@@ -11,17 +12,16 @@ const menuTemplate = new MenuTemplate(
 let selectedKey = "";
 menuTemplate.select("select", ["Send Money", "Withdraw Money"], {
   set: async (ctx, key) => {
-    console.log(key);
     try {
       await ctx.answerCbQuery(`You selected ${key}`);
-      ctx.reply("What Amount?");
+      selectedKey = key;
+      ctx.reply("What Amount, for example, 3000");
       bot.on("text", (ctx) => {
         let amount = ctx.update.message.text;
         const withdrawalFee = withdrawalFees(amount);
-        if (key === "Send Money") {
-          console.log(key);
-          if (amount <= 0) {
-            ctx.reply("not applicable");
+        if (selectedKey === "Send Money") {
+          if (transferFees(amount) < 0 ) {
+            ctx.reply("not applicable"); 
           } else {
             const total = Number(amount) + withdrawalFee + transferFees(amount);
             if (withdrawalFee < 0) {
@@ -42,8 +42,7 @@ menuTemplate.select("select", ["Send Money", "Withdraw Money"], {
               );
             }
           }
-        } else if (key === "Withdraw Money") {
-          console.log(key);
+        } else if (selectedKey === "Withdraw Money") {
           if (withdrawalFee < 0) {
             ctx.reply(`Not applicable`);
           } else {
@@ -54,6 +53,7 @@ menuTemplate.select("select", ["Send Money", "Withdraw Money"], {
       return true;
     } catch (error) {
       ctx.reply(error);
+      return true;
     }
   },
   isSet: (_, key) => key === selectedKey,
@@ -65,3 +65,13 @@ bot.command("start", (ctx) => menuMiddleware.replyToContext(ctx));
 bot.use(menuMiddleware);
 
 bot.launch();
+
+const server = http.createServer((req, resp) => {
+  resp.writeHead(200, { 'Content-Type': 'text/html' });
+  resp.write(`<i> pls visit t.me/mpesaratesbot on telegram </i>`);
+  resp.end();
+});
+ const port = 3000 || process.env.port
+server.listen(port, () => {
+  console.log(`Server running at port:${port}`);
+});
