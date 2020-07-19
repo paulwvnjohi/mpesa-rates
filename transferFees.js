@@ -5,16 +5,16 @@ function transferFees(amount) {
       }
       case (amount > 0 && amount <= 49):
        {
-        return 'Free'
+        return 0
       }
       case amount >= 50 && amount <= 100: {
-        return 'Free'
+        return 0
       }
       case amount >= 101 && amount <= 500: {
-        return 'Free'
+        return 0
       }
       case amount >= 501 && amount <= 1000: {
-        return 'Free'
+        return 0
       }
       case amount >= 1001 && amount <= 1500: {
         return 26

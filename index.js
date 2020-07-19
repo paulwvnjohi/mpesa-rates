@@ -11,17 +11,44 @@ const menuTemplate = new MenuTemplate(
 let selectedKey = "";
 menuTemplate.select("select", ["Send Money", "Withdraw Money"], {
   set: async (ctx, key) => {
+    console.log(key);
     try {
       await ctx.answerCbQuery(`You selected ${key}`);
       ctx.reply("What Amount?");
       bot.on("text", (ctx) => {
         let amount = ctx.update.message.text;
-        if (key === "Send Money") {      
-          const withdrawalFee=  withdrawalFees(amount)
-          const total = Number(amount) + withdrawalFee + transferFees(amount)
-          ctx.reply(`You need to send ${withdrawalFee + Number(amount)}ksh incl. withdrawal fees of ${withdrawalFee}ksh. This will cost you ${transferFees(amount)}ksh. You need a total of ${total}ksh`);
-        } else {
-          ctx.reply(`You will be charged ${withdrawalFees(amount)}`);
+        const withdrawalFee = withdrawalFees(amount);
+        if (key === "Send Money") {
+          console.log(key);
+          if (amount <= 0) {
+            ctx.reply("not applicable");
+          } else {
+            const total = Number(amount) + withdrawalFee + transferFees(amount);
+            if (withdrawalFee < 0) {
+              ctx.reply(
+                `You need to send ${Number(
+                  amount
+                )}ksh incl. that cannot be withdrawn. This will cost you ${transferFees(
+                  amount
+                )}ksh. You need a total of ${Number(amount)}ksh`
+              );
+            } else {
+              ctx.reply(
+                `You need to send ${
+                  withdrawalFee + Number(amount)
+                }ksh incl. withdrawal fees of ${withdrawalFee}ksh. This will cost you ${transferFees(
+                  amount
+                )}ksh. You need a total of ${total}ksh`
+              );
+            }
+          }
+        } else if (key === "Withdraw Money") {
+          console.log(key);
+          if (withdrawalFee < 0) {
+            ctx.reply(`Not applicable`);
+          } else {
+            ctx.reply(`You will be charged ${withdrawalFees(amount)}`);
+          }
         }
       });
       return true;
