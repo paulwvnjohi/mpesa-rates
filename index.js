@@ -1,4 +1,3 @@
-const http =require('http')
 const { Telegraf } = require("telegraf");
 const { MenuTemplate, MenuMiddleware } = require("telegraf-inline-menu");
 const withdrawalFees = require("./withdrawalFees");
@@ -65,13 +64,3 @@ bot.command("start", (ctx) => menuMiddleware.replyToContext(ctx));
 bot.use(menuMiddleware);
 
 bot.launch();
-
-const server = http.createServer((req, resp) => {
-  resp.writeHead(200, { 'Content-Type': 'text/html' });
-  resp.write(`<i> pls visit t.me/mpesaratesbot on telegram </i>`);
-  resp.end();
-});
- const port = 3000 || process.env.port
-server.listen(port, () => {
-  console.log(`Server running at port:${port}`);
-});
