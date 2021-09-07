@@ -1,8 +1,12 @@
+const http = require('http')
 const { Telegraf } = require("telegraf");
 const { MenuTemplate, MenuMiddleware } = require("telegraf-inline-menu");
 const withdrawalFees = require("./withdrawalFees");
 const transferFees = require("./transferFees");
+
 require("dotenv").config();
+
+const port = 3000;
 
 const menuTemplate = new MenuTemplate(
   (ctx) => `Hey ${ctx.from.first_name}, which service would you like to use?`
@@ -19,8 +23,8 @@ menuTemplate.select("select", ["Send Money", "Withdraw Money"], {
         let amount = ctx.update.message.text;
         const withdrawalFee = withdrawalFees(amount);
         if (selectedKey === "Send Money") {
-          if (transferFees(amount) < 0 ) {
-            ctx.reply("not applicable"); 
+          if (transferFees(amount) < 0) {
+            ctx.reply("not applicable");
           } else {
             const total = Number(amount) + withdrawalFee + transferFees(amount);
             if (withdrawalFee < 0) {
@@ -61,6 +65,19 @@ menuTemplate.select("select", ["Send Money", "Withdraw Money"], {
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const menuMiddleware = new MenuMiddleware("/", menuTemplate);
 bot.command("start", (ctx) => menuMiddleware.replyToContext(ctx));
+
 bot.use(menuMiddleware);
 
-bot.launch();
+const server = http.createServer((req, res) => {
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'text/plain');
+  res.end('Hello World');
+});
+
+server.listen((process.env.PORT || port), () => {
+  console.log(`Server running on  port ${port}`);
+  bot
+  .launch() 
+});
+
+
