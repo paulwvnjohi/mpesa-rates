@@ -10,13 +10,7 @@ function withDrawalFees(amount) {
     case amount >= 101 && amount <= 500: {
           return 27
     }
-    case amount >= 501 && amount <= 1000: {
-          return 28
-    }
-    case amount >= 1001 && amount <= 1500: {
-          return 28
-    }
-    case amount >= 1501 && amount <= 2500: {
+    case amount >= 501 && amount <= 2500: {
           return 28
     }
     case amount >= 2501 && amount <= 3500: {
