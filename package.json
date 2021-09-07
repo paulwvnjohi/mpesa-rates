@@ -6,8 +6,6 @@
   "scripts": {
     "dev": "nodemon index",
     "start": "node index.js",
-    "serve": "pm2 start index.js",
-    "stop": "pm2 stop index.js ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -15,7 +13,6 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^8.2.0",
-    "pm2": "^4.4.0",
     "telegraf": "^3.38.0",
     "telegraf-inline-menu": "^5.0.0"
   },
